@@ -1,0 +1,25 @@
+I'm needing a very basic admin website with db backend to manage my inventory. 
+I manage several djs who make dj Mashups with various songs. 
+I need a system to manage this library of Mashups. 
+The individuals djs would log in, and create an entry for their mashup including playlist. 
+Is this something you can develop?
+
+
+
+To simplify..... When a dj creates a dj set, they cannot input a value for the in the Mixtape in the dj set table.
+In a separate process, a user who has Mixtape editing access, can assign a value in the Mixtape field.
+
+
+
+The basic user
+1. To view/ create/ edit his dj set (no delete)
+2. To view other dj sets
+3. To view shows
+
+User with Mixtape access
+4. To add Mixtape values to the dj set entry
+
+User with shows access
+5. To view/ create/ edit shows
+
+h
