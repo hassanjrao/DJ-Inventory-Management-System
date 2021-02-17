@@ -17,7 +17,7 @@ if (empty($_COOKIE['remember_me'])) {
 <head>
     <?php include_once("includes/head.php"); ?>
 
-    <title>All DJ Sets</title>
+    <title>Add Mixtape</title>
 </head>
 
 <body class="page-body" data-url="http://neon.dev">
@@ -152,7 +152,7 @@ if (empty($_COOKIE['remember_me'])) {
                 <thead>
                     <tr>
                         <th>Id</th>
-                        <th>Created By</th>
+
                         <th>DJ Set Episode</th>
                         <!-- <th>Songs</th> -->
                         <th>DJ Set Name</th>
@@ -172,9 +172,9 @@ if (empty($_COOKIE['remember_me'])) {
                         <th>URL SC</th>
 
 
-                        <th>Created at</th>
+                        <!-- <th>Created at</th>
                         <th>Updated By</th>
-                        <th>Updated at</th>
+                        <th>Updated at</th> -->
                         <th>Action</th>
 
                     </tr>
@@ -184,36 +184,10 @@ if (empty($_COOKIE['remember_me'])) {
                     <?php
 
 
-                    $i = 1;
-
-
-
-
-                    // $query = $conn->prepare(
-                    //     "SELECT dj_sets.*, genres.name as genre_name, users.name Creator, a.name Modifier
-                    //     FROM dj_sets
-                    //     JOIN genres
-                    //     On dj_sets.genre=genres.id
-                    //     JOIN users
-                    //     ON dj_sets.created_by=users.id
-                    //     JOIN users a
-                    //     ON dj_sets.updated_by=a.id
-
-                    //     WHERE dj_sets.mixtape=NULL
-
-
-                    // "
-                    // );
+                    
 
                     $query = $conn->prepare(
-                        "SELECT dj_sets.*, users.name Creator, a.name Modifier
-                        FROM dj_sets
-                        JOIN users
-                        ON dj_sets.created_by=users.id
-                        JOIN users a
-                        ON dj_sets.updated_by=a.id
-
-                       
+                        "SELECT * from dj_sets 
                     "
                     );
 
@@ -224,185 +198,137 @@ if (empty($_COOKIE['remember_me'])) {
                     if ($query->rowCount()) {
 
 
+
+                        $a = 1;
+
+                        $i=1;
+
+
                         while ($result = $query->fetch(PDO::FETCH_ASSOC)) {
 
                             if ($result["mixtape"] == NULL) {
 
 
-
                                 $dj_set_id = $result["id"];
 
 
-                                $query_s_art = $conn->prepare("SELECT * FROM dj_set_songs where dj_set_id='$dj_set_id'");
-                                $query_s_art->execute();
-
-                                $ind = 0;
-
-                                while ($result_s_art = $query_s_art->fetch(PDO::FETCH_ASSOC)) {
-
-
-
-                                    $song_id = $result_s_art["song_id"];
-
-
-
-                                    $query_song_name = $conn->prepare("SELECT * FROM songs where id='$song_id'");
-                                    $query_song_name->execute();
-
-                                    while ($result_song_name = $query_song_name->fetch(PDO::FETCH_ASSOC)) {
-
-                                        $song_name_arr[$ind++] = $result_song_name["song_name"];
-                                    }
-                                }
 
 
                     ?>
 
                                 <tr>
-                                    <td><?php echo $i++; ?></td>
-                                    <td><?php echo ucwords($result["Creator"]); ?></td>
-                                    <td><?php echo "000" . $result["mixtape"]; ?></td>
-                                    <!-- <td><?php
+                                    <td><?php echo $a++; ?></td>
 
-
-                                                // var_dump($song_name_arr);
-                                                foreach ($song_name_arr as $key => $song) {
-                                                    # code...
-                                                    echo ucwords($song) . "<br><hr>";
-                                                }
-
-                                                ?></td> -->
+                                    <td><?php echo "000" . $result["dj_set_episode"]; ?></td>
 
 
 
                                     <td><?php echo ucwords($result["set_name"]); ?></td>
 
-                                    <form action="edit_mixtapes.php" method="POST">
 
-                                        <?php
-
+                                    <?php
 
 
-                                        $user_id = $_SESSION["user_id"];
 
-                                        $query = $conn->prepare("SELECT  mixtape from dj_sets where created_by='$user_id'");
+                                    $user_id = $_SESSION["user_id"];
 
-                                        $query->execute();
+                                    $query_mixtape = $conn->prepare("SELECT  mixtape from dj_sets");
+
+                                    $query_mixtape->execute();
 
 
-                                        $mixtape_arr = null;
-                                        $ind = 0;
-                                        if ($query->rowCount() > 0) {
+                                    $mixtape_arr = null;
+                                    $ind = 0;
 
-                                            while ($result = $query->fetch(PDO::FETCH_ASSOC)) {
-                                                $mixtape_arr[$ind++] = $result["mixtape"];
+                                    $id = 1;
+                                    if ($query_mixtape->rowCount() > 0) {
+
+                                        while ($result_mixtape = $query_mixtape->fetch(PDO::FETCH_ASSOC)) {
+                                            if ($result_mixtape["mixtape"] != NULL) {
+                                                $mixtape_arr[$ind++] = $result_mixtape["mixtape"];
                                             }
+                                        }
+
+                                        // print_r($mixtape_arr[0]);
+
+                                        if ($mixtape_arr != null) {
 
                                             // construct a new array
-                                            $sorted_episode_arr = range(min($mixtape_arr), max($mixtape_arr));
+                                            $sorted_mixtape_arr = range(min($mixtape_arr), max($mixtape_arr));
                                             // use array_diff to find the missing elements 
-                                            $missing_seq_arr = array_diff($sorted_episode_arr, $mixtape_arr);
+
+                                            if (in_array(1, $sorted_mixtape_arr)) {
+                                                $missing_seq_arr = array_diff($sorted_mixtape_arr, $mixtape_arr);
 
 
-                                            if (count($missing_seq_arr) > 0) {
-                                                $least_value = min($missing_seq_arr);
-                                            } else {
-                                                if (count($mixtape_arr) == 1 && $mixtape_arr[0] != 1) {
-                                                    $least_value = 1;
+                                                if (count($missing_seq_arr) > 0) {
+                                                    $least_value = min($missing_seq_arr);
                                                 } else {
-                                                    $least_value = max($mixtape_arr) + 1;
+                                                    if (count($mixtape_arr) == 1 && $mixtape_arr[0] != 1) {
+                                                        $least_value = 1;
+                                                    } else {
+                                                        $least_value = max($mixtape_arr) + 1;
+                                                    }
                                                 }
+
+
+
+
+                                                $mixtape_value = $least_value;
+                                            } else {
+                                                $mixtape_value = 1;
                                             }
-
-
-
-
-                                            $mixtape_value = $least_value;
                                         } else {
                                             $mixtape_value = 1;
                                         }
+                                    }
+
+                                    // var_dump($mixtape_value);
 
 
 
 
-
-                                        ?>
-
-                                        <td><input class="form-control" oninput="episode_validation()" type="number" name="mixtape" maxlength="4" min="<?php echo "000" . $mixtape_value ?>" required="" type="number" value="<?php echo "000" . $mixtape_value ?>"></td>
-                                        <td><input class="form-control" type="text" name="mixtape_name" value="<?php echo ucwords($result["mixtape_name"]); ?>"></td>
-                                        <td><input class="form-control" type="text" name="url_yt" value="<?php echo $result["url_yt"]; ?>"></td>
-                                        <td><input class="form-control" type="text" name="url_sc" value="<?php echo $result["url_sc"]; ?>"></td>
-
-                                        <input type="hidden" name="dj_set_id" value="<?php echo $dj_set_id; ?>">
-
-
-                                        <td><?php echo $result["created"]; ?></td>
-                                        <td><?php echo ucwords($result["Modifier"]); ?></td>
-                                        <td><?php echo $result["updated"]; ?></td>
-
-
-
-
-
-                                        <?php
-
-                                        // if (isset($_GET["access"])) {
-                                        ?>
-
-                                        <td>
-                                            <button type="submit" name="mixtape_edit_btn" class="btn btn-default btn-sm btn-icon icon-left">
-                                                <i class="entypo-pencil"></i>
-                                                Update
-                                            </button>
-
-
-                                            <!-- <a href="delete_dj sets.php?id=<?php //echo $result["id"] 
-                                                                                ?>" class="btn btn-danger btn-sm btn-icon icon-left">
-                                    <i class="entypo-cancel"></i>
-                                    Delete
-                                </a> -->
-
-                                        </td>
-                                    </form>
-                                    <?php
-                                    // } else {
 
                                     ?>
-                                    <!-- <td>
-                                <a href="edit_users.php?user_id=<?php //echo $result["id"] 
-                                                                ?>" class="btn btn-default btn-sm btn-icon icon-left">
-                                    <i class="entypo-pencil"></i>
-                                    Edit
-                                </a>
 
-                                <a href="delete_users.php?id=<?php //echo $result["id"] 
-                                                                ?>" class="btn btn-danger btn-sm btn-icon icon-left">
-                                    <i class="entypo-cancel"></i>
-                                    Delete
-                                </a>
+                                    <td><label class="text-danger" id="<?php  echo "taken-$dj_set_id"?>"></label><input class="form-control" oninput="mixtape_validation(<?php echo $dj_set_id ?>)" id="<?php echo "mixtape-$dj_set_id" ?>" type="number" name="mixtape" maxlength="4" min="<?php echo "$mixtape_value" ?>" required="" type="number" value="<?php echo "000" . $mixtape_value ?>"></td>
+                                    <td><input class="form-control" id="<?php echo "mixtape_name-$dj_set_id" ?>" type="text" name="mixtape_name" value="<?php echo ucwords($result["mixtape_name"]); ?>"></td>
+                                    <td><input class="form-control" id="<?php echo "url_yt-$dj_set_id" ?>" type="text" name="url_yt" value="<?php echo $result["url_yt"]; ?>"></td>
+                                    <td><input class="form-control" id="<?php echo "url_sc-$dj_set_id" ?>" type="text" name="url_sc" value="<?php echo $result["url_sc"]; ?>"></td>
 
-                            </td> -->
+                                    <input type="hidden" name="dj_set_id" value="<?php echo $dj_set_id; ?>">
+
+
+                                    <td>
+                                        <a onclick="updateMixtape(<?php echo $dj_set_id ?>)" id="btn-update" name="mixtape_edit_btn" class="btn btn-default btn-sm btn-icon icon-left">
+                                            <i class="entypo-pencil"></i>
+                                            Update
+                                        </a>
+
+
+                                    </td>
                                     <?php
-                                    // }
+
+
                                     ?>
-
-
-                                </tr>
-
 
 
 
 
                                 </tr>
+
 
 
 
 
 
                     <?php
+
+                                $i++;
                             }
                         }
                     }
+
 
                     ?>
 
@@ -458,6 +384,80 @@ if (empty($_COOKIE['remember_me'])) {
     <script src="assets/js/neon-demo.js"></script>
 
 
+
+    <script>
+        function mixtape_validation(i) {
+            $('#taken-' + i).text('');
+
+            var value = document.getElementById("mixtape-" + i).value;
+
+
+            if (value.length > this.maxLength) {
+                value = value.slice(0, this.maxLength);
+            }
+
+            var taken_arr = <?php echo json_encode($mixtape_arr) ?>;
+
+            taken_arr.sort(function(a, b){return a - b});
+
+            console.log(taken_arr);
+
+            var msg="*Mixtape ";
+            var taken_val="";
+            taken_arr.forEach(elem => {
+                taken_val+= "#000"+elem+", ";
+            });
+
+            
+
+            if (taken_arr != null) {
+
+                if (taken_arr.includes(value)) {
+                    document.getElementById("mixtape-" + i).value = "";
+                    $('#taken-'+i).text(msg+taken_val+" Already Taken")
+                }
+            }
+        }
+
+
+        function updateMixtape(id) {
+
+            var dj_set_id = id;
+
+            var mixtape = $("#mixtape-" + id).val();
+            var mixtape_name = $("#mixtape_name-" + id).val();
+            var url_yt = $("#url_yt-" + id).val();
+            var url_sc = $("#url_sc-" + id).val();
+
+            console.log(mixtape);
+            console.log(mixtape_name);
+            console.log(url_yt);
+            console.log(url_sc);
+            $.ajax({
+                type: "POST",
+                url: "edit_mixtapes.php",
+                data: {
+                    dj_set_id: dj_set_id,
+                    mixtape: mixtape,
+                    mixtape_name: mixtape_name,
+                    url_yt: url_yt,
+                    url_sc: url_sc
+                },
+
+                success: function(data) {
+                    console.log(data);
+
+                    if(data=="success"){
+                        window.location.href = "add_mixtapes.php?status=edit_succ";
+                    }
+                    else{
+                        window.location.href = "add_mixtapes.php?status=edit_fail";
+                    }
+                }
+            });
+
+        }
+    </script>
 
 </body>
 

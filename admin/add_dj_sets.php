@@ -216,26 +216,30 @@ if (empty($_COOKIE['remember_me'])) {
                                         // construct a new array
                                         $sorted_episode_arr = range(min($dj_set_episode_arr), max($dj_set_episode_arr));
                                         // use array_diff to find the missing elements 
-                                        $missing_seq_arr = array_diff($sorted_episode_arr, $dj_set_episode_arr);
+
+                                        if (in_array(1, $sorted_episode_arr)) {
+                                            $missing_seq_arr = array_diff($sorted_episode_arr, $dj_set_episode_arr);
 
 
-                                        if (count($missing_seq_arr) > 0) {
-                                            $least_value = min($missing_seq_arr);
-                                        } else {
-                                            if (count($dj_set_episode_arr) == 1 && $dj_set_episode_arr[0] != 1) {
-                                                $least_value = 1;
+                                            if (count($missing_seq_arr) > 0) {
+                                                $least_value = min($missing_seq_arr);
                                             } else {
-                                                $least_value = max($dj_set_episode_arr) + 1;
+                                                if (count($dj_set_episode_arr) == 1 && $dj_set_episode_arr[0] != 1) {
+                                                    $least_value = 1;
+                                                } else {
+                                                    $least_value = max($dj_set_episode_arr) + 1;
+                                                }
                                             }
+
+
+                                            $dj_set_episode_value = $least_value;
+                                        } else {
+                                            $dj_set_episode_value = 1;
                                         }
-
-
-
-
-                                        $dj_set_episode_value = $least_value;
                                     } else {
                                         $dj_set_episode_value = 1;
                                     }
+                                    // }
 
 
                                     ?>
@@ -544,20 +548,28 @@ if (empty($_COOKIE['remember_me'])) {
 
             var value = document.getElementById("episode_number").value;
 
-           
+
             if (value.length > this.maxLength) {
                 value = value.slice(0, this.maxLength);
             }
 
             var taken_arr = <?php echo json_encode($dj_set_episode_arr) ?>;
 
+            taken_arr.sort(function(a, b){return a - b});
+
             console.log(taken_arr);
+
+            var msg="*Episode ";
+            var taken_val="";
+            taken_arr.forEach(elem => {
+                taken_val+= "#000"+elem+", ";
+            });
 
             if (taken_arr != null) {
 
                 if (taken_arr.includes(value)) {
                     document.getElementById("episode_number").value = "";
-                    $('#taken').text('*Episode #000' + value + ' is Already Taken')
+                    $('#taken').text(msg+taken_val+" Already Taken");
                 }
             }
         }
