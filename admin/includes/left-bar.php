@@ -416,6 +416,28 @@ $user_type_arr = $_SESSION["user_access_arr"];
 			</li>
 
 
+			<li class="has-sub">
+				<a href="#">
+					<i class="entypo-layout"></i>
+					<span class="title">Show Episodes</span>
+				</a>
+				<ul>
+					<li>
+						<a href="add_show_episodes.php">
+							<span class="title">Add Show Episodes</span>
+						</a>
+					</li>
+
+					<li>
+						<a href="all_show_episodes.php">
+							<span class="title">All Show Episodes</span>
+						</a>
+					</li>
+
+				</ul>
+			</li>
+
+
 
 
 
