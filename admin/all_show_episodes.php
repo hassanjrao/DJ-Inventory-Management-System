@@ -232,7 +232,6 @@ if (empty($_COOKIE['remember_me'])) {
                             while ($result_dj_set_names = $query_dj_set_names->fetch(PDO::FETCH_ASSOC)) {
 
                                 $dj_set_names_arr[$ind++] = $result_dj_set_names["set_name"];
-
                             }
                         }
 
@@ -265,8 +264,8 @@ if (empty($_COOKIE['remember_me'])) {
                             <td><?php echo $result["co_host"]; ?></td>
                             <td><?php echo $result["guests"]; ?></td>
                             <td><?php echo $result["produced_by"]; ?></td>
-                            <td><?php echo ucwords($result["status_id"]); ?></td>
-                          
+                            <td><?php echo ucwords($result["status"]); ?></td>
+
                             <td><?php echo ucfirst($result["notes"]); ?></td>
                             <td><?php echo ucwords($result["tags"]); ?></td>
                             <td><?php echo $result["url_yt"]; ?></td>
@@ -290,8 +289,8 @@ if (empty($_COOKIE['remember_me'])) {
                             <!-- <td> -->
 
 
-                                <!-- <a href="delete_dj sets.php?id=<?php //echo $result["id"] 
-                                                                    ?>" class="btn btn-danger btn-sm btn-icon icon-left">
+                            <!-- <a href="delete_dj sets.php?id=<?php //echo $result["id"] 
+                                                                ?>" class="btn btn-danger btn-sm btn-icon icon-left">
                                     <i class="entypo-cancel"></i>
                                     Delete
                                 </a> -->
@@ -302,14 +301,13 @@ if (empty($_COOKIE['remember_me'])) {
 
                             ?>
                             <td>
-                                <a href="edit_show_episodes.php?user_id=<?php //echo $result["id"] 
-                                                                ?>" class="btn btn-default btn-sm btn-icon icon-left">
+                                <a href="edit_show_episodes.php?show_episode_id=<?php echo $result["id"]?>" class="btn btn-default btn-sm btn-icon icon-left">
                                     <i class="entypo-pencil"></i>
                                     Edit
                                 </a>
 
                                 <a href="delete_show_episodes.php?id=<?php //echo $result["id"] 
-                                                                ?>" class="btn btn-danger btn-sm btn-icon icon-left">
+                                                                        ?>" class="btn btn-danger btn-sm btn-icon icon-left">
                                     <i class="entypo-cancel"></i>
                                     Delete
                                 </a>

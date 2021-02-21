@@ -126,12 +126,7 @@ if (empty($_COOKIE['remember_me'])) {
 
 
 
-
-
-
-                               
-
-                            <div class="form-group">
+                                <div class="form-group">
                                     <label class="col-sm-3 control-label">songs</label>
 
                                     <div class="col-sm-5">
@@ -297,7 +292,7 @@ if (empty($_COOKIE['remember_me'])) {
                                     <div class="col-sm-offset-3 col-sm-5">
                                         <div class="checkbox">
                                             <label>
-                                                <input name="viloence_drugs_guns" <?php echo $result["viloence_drugs_guns"]=="yes" ? "checked" : ""; ?>  value="yes" type="checkbox">Viloence, Drugs, Guns
+                                                <input name="viloence_drugs_guns" <?php echo $result["viloence_drugs_guns"] == "yes" ? "checked" : ""; ?> value="yes" type="checkbox">Viloence, Drugs, Guns
                                             </label>
                                         </div>
 
@@ -309,7 +304,7 @@ if (empty($_COOKIE['remember_me'])) {
                                     <div class="col-sm-offset-3 col-sm-5">
                                         <div class="checkbox">
                                             <label>
-                                                <input name="explicit_lyrical_content" <?php echo $result["explicit_lyrical_content"]=="yes" ? "checked" : ""; ?> value="yes" type="checkbox">Explicit Lyrical Content
+                                                <input name="explicit_lyrical_content" <?php echo $result["explicit_lyrical_content"] == "yes" ? "checked" : ""; ?> value="yes" type="checkbox">Explicit Lyrical Content
                                             </label>
                                         </div>
 
@@ -380,7 +375,7 @@ if (empty($_COOKIE['remember_me'])) {
 
                                 <div class="form-group">
                                     <div class="col-sm-offset-3 col-sm-5">
-                                        <button type="submit" name="submit" class="btn btn-default">Add dj set</button>
+                                        <button type="submit" name="submit" class="btn btn-default">Edit DJ Set</button>
                                     </div>
                                 </div>
                             </form>
@@ -531,7 +526,7 @@ if (empty($_COOKIE['remember_me'])) {
 
             var value = document.getElementById("episode_number").value;
 
-           
+
             if (value.length > this.maxLength) {
                 value = value.slice(0, this.maxLength);
             }

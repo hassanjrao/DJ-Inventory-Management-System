@@ -97,7 +97,7 @@ if (empty($_COOKIE['remember_me'])) {
                                 $co_host = $_POST["co_host"];
                                 $guests = $_POST["guests"];
                                 $produced_by = $_POST["produced_by"];
-                                $status_id = $_POST["status"];
+                                $status = $_POST["status"];
 
 
 
@@ -115,8 +115,8 @@ if (empty($_COOKIE['remember_me'])) {
                                 $created_by = $_SESSION["user_id"];
                                 $updated_by = $created_by;
 
-                                $stmt = $conn->prepare("INSERT INTO `show_episodes`(`show_episode_number`,`show_name`,`episode_name`,`main_host`,`co_host`,`guests`,`produced_by`,`status_id`,`notes`,`tags`,`url_yt`,`url_sc`,`plateform`,`created_by`,`updated_by`,`created`,`updated`) 
-                                VALUES (:show_episode_number,:show_name,:episode_name,:main_host,:co_host,:guests,:produced_by,:status_id,:notes,:tags,:url_yt,:url_sc,:plateform,:created_by,:updated_by ,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)");
+                                $stmt = $conn->prepare("INSERT INTO `show_episodes`(`show_episode_number`,`show_name`,`episode_name`,`main_host`,`co_host`,`guests`,`produced_by`,`status`,`notes`,`tags`,`url_yt`,`url_sc`,`plateform`,`created_by`,`updated_by`,`created`,`updated`) 
+                                VALUES (:show_episode_number,:show_name,:episode_name,:main_host,:co_host,:guests,:produced_by,:status,:notes,:tags,:url_yt,:url_sc,:plateform,:created_by,:updated_by ,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)");
 
 
                                 $stmt->bindParam(':show_episode_number', $show_episode_number);
@@ -126,7 +126,7 @@ if (empty($_COOKIE['remember_me'])) {
                                 $stmt->bindParam(':co_host', $co_host);
                                 $stmt->bindParam(':guests', $guests);
                                 $stmt->bindParam(':produced_by', $produced_by);
-                                $stmt->bindParam(':status_id', $status_id);
+                                $stmt->bindParam(':status', $status);
 
 
                                 $stmt->bindParam(':notes', $notes);
@@ -295,7 +295,7 @@ if (empty($_COOKIE['remember_me'])) {
                                     } else {
                                         $show_episode_value = 1;
                                     }
-                                   
+
 
                                     ?>
 
@@ -356,7 +356,13 @@ if (empty($_COOKIE['remember_me'])) {
                                     <label for="field-1" class="col-sm-3 control-label">Status</label>
 
                                     <div class="col-sm-5">
-                                        <input required="" value="1" type="text" name="status" class="form-control" id="field-1" placeholder="Main Host">
+
+                                        <select name="status" class="form-control" required="">
+                                            <option>Planning</option>
+                                            <option>In Production</option>
+                                            <option>Completed</option>
+                                        </select>
+                                       
                                     </div>
                                 </div>
 
@@ -498,7 +504,7 @@ if (empty($_COOKIE['remember_me'])) {
                 value = value.slice(0, this.maxLength);
             }
 
-            var taken_arr = <?php echo json_encode($dj_set_episode_arr) ?>;
+            var taken_arr = <?php echo json_encode($show_episode_arr) ?>;
 
             taken_arr.sort(function(a, b) {
                 return a - b

@@ -11,7 +11,9 @@ if (empty($_COOKIE['remember_me'])) {
     }
 }
 
-
+if(!in_array(4,$_SESSION["user_access_arr"])){
+	header('location:index.php');
+}
 ?>
 
 <!DOCTYPE html>
