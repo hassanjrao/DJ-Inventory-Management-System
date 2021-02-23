@@ -97,7 +97,7 @@ if (empty($_COOKIE['remember_me'])) {
                                 $original_bpm = $_POST["original_bpm"];
                                 $original_key = $_POST["original_key"];
                                 $viloence_drugs_guns = isset($_POST["viloence_drugs_guns"]) == true ? $_POST["viloence_drugs_guns"] : "no";
-                                $explicit_lyrical_content = isset($_POST["explicit_lyrical_content"])==true?$_POST["explicit_lyrical_content"]: "no";
+                                $explicit_lyrical_content = isset($_POST["explicit_lyrical_content"]) == true ? $_POST["explicit_lyrical_content"] : "no";
 
                                 $created_by = $_SESSION["user_id"];
                                 $updated_by = $created_by;
@@ -162,15 +162,17 @@ if (empty($_COOKIE['remember_me'])) {
 
                             ?>
 
+                            <div id="notification-div">
+                            </div>
 
-                            <form role="form" method="post" class="form-horizontal form-groups-bordered">
+                            <form role="form" id="song-form" class="form-horizontal form-groups-bordered">
 
 
                                 <div class="form-group">
                                     <label for="field-1" class="col-sm-3 control-label">Song Name</label>
 
                                     <div class="col-sm-5">
-                                        <input required="" type="text" name="song_name" class="form-control" id="field-1" placeholder="Song Name">
+                                        <input type="text" name="song_name" class="form-control" placeholder="Song Name">
                                     </div>
                                 </div>
 
@@ -324,7 +326,7 @@ if (empty($_COOKIE['remember_me'])) {
 
                                 <div class="form-group">
                                     <div class="col-sm-offset-3 col-sm-5">
-                                        <button type="submit" name="submit" class="btn btn-default">Add song</button>
+                                        <button type="submit" onclick="sendFormData()" name="submit" class="btn btn-default">Add song</button>
                                     </div>
                                 </div>
                             </form>
@@ -394,6 +396,75 @@ if (empty($_COOKIE['remember_me'])) {
 
     <!-- Demo Settings -->
     <script src="assets/js/neon-demo.js"></script>
+
+
+    <script src="assets/js/jquery.validate.min.js"></script>
+
+    <script>
+        function sendFormData() {
+
+
+            $('#song-form').validate({ // initialize the plugin
+                ignore: [],
+
+                rules: {
+
+                    song_name: {
+                        required: true,
+
+                    },
+                    artists: {
+                        required: true,
+
+                    },
+                    project: {
+                        required: true,
+
+                    },
+
+                    tags: {
+                        required: true,
+
+                    },
+                    original_bpm: {
+                        required: true,
+
+                    },
+
+
+
+                },
+                submitHandler: function(form) { // for demo
+                    var form_data = $("#song-form").serialize();
+
+
+
+
+
+                    $.ajax({
+                        type: "POST",
+                        url: "send_songs_data.php",
+                        data: form_data,
+                        cache: false,
+                        success: function(data) {
+                            $("#notification-div").html(data);
+                            $('html, body').animate({
+                                scrollTop: $("#notification-div").offset().top
+                            }, 100);
+                        }
+                    });
+
+
+
+                }
+            });
+
+            // console.log($("#song-form").validate());
+
+
+        }
+    </script>
+
 
 </body>
 

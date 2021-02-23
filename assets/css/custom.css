@@ -3,7 +3,13 @@
  * Apply Here your Custom CSS
  *
 */
+.error {
+    color: #F00;
 
-body {
-	
+}
+
+#dummy{
+    visibility: hidden!Important;
+    height:1px;
+    width:1px;
 }

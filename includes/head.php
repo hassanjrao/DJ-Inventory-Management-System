@@ -13,9 +13,12 @@
 <link rel="stylesheet" href="assets/css/neon-core.css">
 <link rel="stylesheet" href="assets/css/neon-theme.css">
 <link rel="stylesheet" href="assets/css/neon-forms.css">
-<link rel="stylesheet" href="assets/css/custom.css">
 
 <script src="assets/js/jquery-1.11.3.min.js"></script>
+
+
+<link rel="stylesheet" href="assets/css/custom.css">
+
 
 <!--[if lt IE 9]><script src="assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
 

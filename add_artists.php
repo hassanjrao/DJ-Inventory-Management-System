@@ -83,74 +83,26 @@ if (empty($_COOKIE['remember_me'])) {
 
                         <div class="panel-body">
 
-                            <?php
+                            <div id="notification-div">
+                            </div>
 
-                            if (isset($_POST['submit'])) {
-
-
-
-                                $artist_name = $_POST["artist_name"];
-                                $created_by = $_SESSION["user_id"];
-                                $updated_by=$created_by;
-
-                                $stmt = $conn->prepare("INSERT INTO `artists`( `artist_name`,`created_by`,`updated_by`,`created`,`updated`) VALUES (:artist_name,:created_by,:updated_by ,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)");
-
-
-                                $stmt->bindParam(':artist_name', $artist_name);
-                                $stmt->bindParam(':created_by', $created_by);
-                                $stmt->bindParam(':updated_by', $updated_by);
-
-                                if ($stmt->execute()) {
-
-
-                            ?>
-
-                                    <br>
-                                    <div class="alert alert-success alert-dismissible" role="alert">
-                                        <strong>Congrats!</strong> Successfully Submit
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <br>
-
-                                <?php
-
-                                } else {
-                                ?>
-                                    <br>
-                                    <div class="alert alert-danger alert-dismissible" role="alert">
-                                        <strong>Oops!</strong> Some Error Occured
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <br>
-
-                            <?php
-                                }
-                            }
-
-                            ?>
-
-
-                            <form role="form" method="post" class="form-horizontal form-groups-bordered">
+                            <form id="artist-form" class="form-horizontal form-groups-bordered">
 
 
                                 <div class="form-group">
                                     <label for="field-1" class="col-sm-3 control-label">Artist Name</label>
 
                                     <div class="col-sm-5">
-                                        <input required="" type="text" name="artist_name" class="form-control" id="field-1" placeholder="Artist Name">
+                                        <input required="" type="text" name="artist_name" class="form-control" id="artist_name" placeholder="Artist Name">
                                     </div>
                                 </div>
 
-                                
+
 
 
                                 <div class="form-group">
                                     <div class="col-sm-offset-3 col-sm-5">
-                                        <button type="submit" name="submit" class="btn btn-default">Add artist</button>
+                                        <button type="button" onclick="sendFormData()" name="submit" class="btn btn-default">Add artist</button>
                                     </div>
                                 </div>
                             </form>
@@ -200,6 +152,32 @@ if (empty($_COOKIE['remember_me'])) {
 
     <!-- Demo Settings -->
     <script src="assets/js/neon-demo.js"></script>
+
+    <script>
+        function sendFormData() {
+
+            var form_data = $("#artist-form").serialize();
+
+            var artist_name = $("#artist_name").val();
+
+            console.log(form_data);
+
+            if (artist_name != "") {
+                $.ajax({
+                    type: "POST",
+                    url: "send_artist_data.php",
+                    data: form_data,
+                    cache: false,
+                    success: function(data) {
+                        $("#notification-div").html(data);
+                        $('html, body').animate({
+                            scrollTop: $("#notification-div").offset().top
+                        }, 100);
+                    }
+                });
+            }
+        }
+    </script>
 
 </body>
 
