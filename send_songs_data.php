@@ -34,13 +34,17 @@ $updated_by = $created_by;
 $query = $conn->prepare("SELECT song_name FROM songs WHERE `song_name` LIKE '$song_name'");
 $query->execute();
 
+$response_arr[] = null;
+
 if ($query->rowCount() > 0) {
-    echo '<div class="alert alert-danger alert-dismissible" role="alert">
-    <strong>Oops!</strong> *This Artist Already Exists!
+    $response_arr[0] = '<div class="alert alert-danger alert-dismissible" role="alert">
+    <strong>Oops!</strong> *This Song Already Exists!
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
 </div>';
+
+    echo json_encode($response_arr);
 } else {
 
 
@@ -75,11 +79,37 @@ VALUES (:song_name,:project,:genre,:tags,:original_bpm,:original_key,:viloence_d
         }
 
 
-        echo ' <div class="alert alert-success alert-dismissible" role="alert">
-    <strong>Congrats!</strong> Successfully Submit
+        $response_arr[0] = ' <div class="alert alert-success alert-dismissible" role="alert">
+    <strong>Congrats!</strong> Successfully Added
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
 </div>';
+
+
+        $songs="";
+
+
+
+        $query = $conn->prepare("SELECT id,song_name FROM songs ORDER BY id desc");
+
+        $query->execute();
+
+        while ($result = $query->fetch(PDO::FETCH_ASSOC)) {
+
+
+           $songs .='<option value="'. $result["id"].'">'.ucwords($result["song_name"]).'</option>';
+
+        }
+
+
+
+
+
+        $response_arr[1]=$songs;
+
+
+
+        echo json_encode($response_arr);
     }
 }

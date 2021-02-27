@@ -252,14 +252,30 @@ if (empty($_COOKIE['remember_me'])) {
                                 </div>
 
                                 <div class="form-group">
+                                    <!-- Button trigger modal -->
+
+                                    <label for="field-1" class="col-sm-3 control-label">Add New Songs</label>
+                                    <a href="javascript:;" onclick="jQuery('#modal-6').modal('show', {backdrop: 'static'});" class="btn btn-default">Add New Songs</a>
+
+
+
+
+
+
+
+                                </div>
+
+
+                                <div class="form-group">
                                     <label class="col-sm-3 control-label">Songs</label>
 
+
                                     <div class="col-sm-5">
-                                        <select class="form-control " multiple name="songs[]" required="">
+                                        <select class="form-control" id="songs-cont" multiple name="songs[]" required="">
 
                                             <?php
 
-                                            $query = $conn->prepare("SELECT id,song_name FROM songs");
+                                            $query = $conn->prepare("SELECT id,song_name FROM songs ORDER BY id desc");
 
                                             $query->execute();
 
@@ -484,6 +500,224 @@ if (empty($_COOKIE['remember_me'])) {
 
 
 
+            <div class="modal fade" id="modal-6">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">Modal Content is Responsive</h4>
+                        </div>
+
+                        <form role="form" id="song-form" class="form-horizontal form-groups-bordered">
+
+                            <div class="modal-header" id="notification-div">
+
+                            </div>
+
+
+                            <div class="modal-body">
+
+
+                                <div class="row">
+                                    <div class="col-md-12">
+
+                                        <div class="form-group">
+                                            <label for="field-1" class="col-sm-3 control-label">Song Name</label>
+
+                                            <div class="col-sm-5">
+                                                <input type="text" name="song_name" class="form-control" placeholder="Song Name">
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+
+                                        <div class="form-group">
+                                            <label for="field-1" class="col-sm-3 control-label">Add New Artists</label>
+
+                                            <div class="col-sm-5">
+                                                <input required="" type="text" name="artist_name" class="form-control" id="artist_name" placeholder="Artist Name">
+                                            </div>
+
+                                            <button type="button" onclick="sendArtistData()" name="submit" class="btn btn-default">Add artist</button>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <!--  -->
+
+
+
+
+
+
+
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Artists</label>
+
+                                    <div class="col-sm-5">
+                                        <select class="form-control" id="artist-cont" multiple name="artists[]" required="">
+
+                                            <?php
+
+                                            $query = $conn->prepare("SELECT id,artist_name FROM artists order by id desc");
+
+                                            $query->execute();
+
+                                            while ($result = $query->fetch(PDO::FETCH_ASSOC)) {
+
+                                            ?>
+                                                <option value="<?php echo $result["id"] ?>"><?php echo ucwords($result["artist_name"]) ?></option>
+                                            <?php
+                                            }
+
+
+                                            ?>
+
+
+
+                                        </select>
+                                    </div>
+                                </div>
+
+
+
+
+
+                                <div class="form-group">
+                                    <label for="field-1" class="col-sm-3 control-label">Album/Movie/Poject</label>
+
+                                    <div class="col-sm-5">
+                                        <input required="" type="text" name="project" class="form-control" id="field-1" placeholder="Album/Movie/Poject">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Genre</label>
+
+                                    <div class="col-sm-5">
+                                        <select class="form-control" name="genre" required="">
+
+                                            <?php
+
+                                            $query = $conn->prepare("SELECT id,name FROM genres");
+
+                                            $query->execute();
+
+                                            while ($result = $query->fetch(PDO::FETCH_ASSOC)) {
+
+                                            ?>
+                                                <option value="<?php echo $result["id"] ?>"><?php echo ucwords($result["name"]) ?></option>
+                                            <?php
+                                            }
+
+
+                                            ?>
+
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Tags</label>
+
+                                    <div class="col-sm-5">
+
+                                        <input type="text" required="" name="tags" placeholder="Add Tags" class="form-control tagsinput" />
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="field-1" class="col-sm-3 control-label">Original BPM</label>
+
+                                    <div class="col-sm-5">
+                                        <input required="" type="number" name="original_bpm" class="form-control" id="field-1" placeholder="Original BPM">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Original Key</label>
+
+                                    <div class="col-sm-5">
+                                        <select class="form-control" name="original_key" required="">
+
+                                            <option>1A</option>
+                                            <option>1B</option>
+                                            <option>2A</option>
+                                            <option>2B</option>
+                                            <option>3A</option>
+                                            <option>3B</option>
+                                            <option>4A</option>
+                                            <option>4B</option>
+                                            <option>5A</option>
+                                            <option>5B</option>
+                                            <option>6A</option>
+                                            <option>6B</option>
+                                            <option>7A</option>
+                                            <option>7B</option>
+                                            <option>8A</option>
+                                            <option>8B</option>
+                                            <option>9A</option>
+                                            <option>9B</option>
+                                            <option>10A</option>
+                                            <option>10B</option>
+                                            <option>11A</option>
+                                            <option>11B</option>
+                                            <option>12A</option>
+                                            <option>12B</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="form-group">
+                                    <div class="col-sm-offset-3 col-sm-5">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input name="viloence_drugs_guns" value="yes" type="checkbox">Viloence, Drugs, Guns
+                                            </label>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-sm-offset-3 col-sm-5">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input name="explicit_lyrical_content" value="yes" type="checkbox">Explicit Lyrical Content
+                                            </label>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="submit" onclick="sendFormData()" name="submit" class="btn btn-info">Save changes</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+
+
+
 
 
             <!-- Footer starts -->
@@ -541,6 +775,8 @@ if (empty($_COOKIE['remember_me'])) {
     <!-- Demo Settings -->
     <script src="assets/js/neon-demo.js"></script>
 
+    <script src="assets/js/jquery.validate.min.js"></script>
+
 
     <script>
         function episode_validation() {
@@ -555,23 +791,116 @@ if (empty($_COOKIE['remember_me'])) {
 
             var taken_arr = <?php echo json_encode($dj_set_episode_arr) ?>;
 
-            taken_arr.sort(function(a, b){return a - b});
+            taken_arr.sort(function(a, b) {
+                return a - b
+            });
 
             console.log(taken_arr);
 
-            var msg="*Episode ";
-            var taken_val="";
+            var msg = "*Episode ";
+            var taken_val = "";
             taken_arr.forEach(elem => {
-                taken_val+= "#000"+elem+", ";
+                taken_val += "#000" + elem + ", ";
             });
 
             if (taken_arr != null) {
 
                 if (taken_arr.includes(value)) {
                     document.getElementById("episode_number").value = "";
-                    $('#taken').text(msg+taken_val+" Already Taken");
+                    $('#taken').text(msg + taken_val + " Already Taken");
                 }
             }
+        }
+
+        function sendArtistData() {
+
+
+            var artist_name = $("#artist_name").val();
+
+            // console.log(form_data);
+
+            if (artist_name != "") {
+                $.ajax({
+                    type: "POST",
+                    url: "send_artist_data.php",
+                    data: {
+                        artist_name: artist_name
+                    },
+                    cache: false,
+                    success: function(data) {
+
+
+                        var res = $.parseJSON(data);
+                        console.log(res);
+                        $("#notification-div").html(res[0]);
+
+                        $("#artist-cont").html(res[1]);
+
+                    }
+                });
+            } else {
+                $("#notification-div").html('<h4 class="text-danger">**Enter Artist Name!</h4>');
+            }
+        }
+
+        function sendFormData() {
+
+            $('#song-form').validate({ // initialize the plugin
+                ignore: [],
+
+                rules: {
+
+                    song_name: {
+                        required: true,
+
+                    },
+                    artists: {
+                        required: true,
+
+                    },
+                    project: {
+                        required: true,
+
+                    },
+
+                    tags: {
+                        required: true,
+
+                    },
+                    original_bpm: {
+                        required: true,
+
+                    },
+
+
+
+                },
+                submitHandler: function(form) { // for demo
+                    var form_data = $("#song-form").serialize();
+
+                    $.ajax({
+                        type: "POST",
+                        url: "send_songs_data.php",
+                        data: form_data,
+                        cache: false,
+                        success: function(data) {
+                            // var data_j= JSON.parse(data);
+                            var res = $.parseJSON(data);
+                            console.log(res);
+                            $("#notification-div").html(res[0]);
+
+                            $("#songs-cont").html(res[1]);
+                            $('html, body').animate({
+                                scrollTop: $("#notification-div").offset().top
+                            }, 100);
+                        }
+                    });
+                }
+            });
+
+            // console.log($("#song-form").validate());
+
+
         }
     </script>
 

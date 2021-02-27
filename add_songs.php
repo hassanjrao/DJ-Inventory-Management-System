@@ -447,7 +447,11 @@ if (empty($_COOKIE['remember_me'])) {
                         data: form_data,
                         cache: false,
                         success: function(data) {
-                            $("#notification-div").html(data);
+                            var res = $.parseJSON(data);
+                            console.log(res);
+                            $("#notification-div").html(res[0]);
+
+
                             $('html, body').animate({
                                 scrollTop: $("#notification-div").offset().top
                             }, 100);
