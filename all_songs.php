@@ -188,6 +188,8 @@ if (empty($_COOKIE['remember_me'])) {
                         ON songs.created_by=users.id
                         JOIN users a
                         ON songs.updated_by=a.id
+
+                        order by songs.id desc
                         
                        
                     ");

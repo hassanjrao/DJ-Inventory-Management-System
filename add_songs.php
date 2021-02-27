@@ -184,7 +184,7 @@ if (empty($_COOKIE['remember_me'])) {
 
                                             <?php
 
-                                            $query = $conn->prepare("SELECT id,artist_name FROM artists");
+                                            $query = $conn->prepare("SELECT id,artist_name FROM artists order by id desc");
 
                                             $query->execute();
 
