@@ -67,7 +67,11 @@ if (empty($_COOKIE['remember_me'])) {
             <div class="row">
                 <div class="col-md-12">
 
+                    <div id="notification-div">
+                    </div>
                     <div class="panel panel-primary" data-collapsed="0">
+
+
 
                         <div class="panel-heading">
                             <div class="panel-title">
@@ -83,10 +87,9 @@ if (empty($_COOKIE['remember_me'])) {
 
                         <div class="panel-body">
 
-                            <div id="notification-div">
-                            </div>
 
-                            <form id="artist-form" class="form-horizontal form-groups-bordered">
+
+                            <form id="form" class="form-horizontal form-groups-bordered">
 
 
                                 <div class="form-group">
@@ -102,7 +105,7 @@ if (empty($_COOKIE['remember_me'])) {
 
                                 <div class="form-group">
                                     <div class="col-sm-offset-3 col-sm-5">
-                                        <button type="button" onclick="sendFormData()" name="submit" class="btn btn-default">Add artist</button>
+                                        <button type="submit" onclick="sendFormData()" name="submit" class="btn btn-default">Add artist</button>
                                     </div>
                                 </div>
                             </form>
@@ -153,35 +156,51 @@ if (empty($_COOKIE['remember_me'])) {
     <!-- Demo Settings -->
     <script src="assets/js/neon-demo.js"></script>
 
+    <script src="assets/js/jquery.validate.min.js"></script>
+
     <script>
         function sendFormData() {
 
-            var form_data = $("#artist-form").serialize();
 
-            var artist_name = $("#artist_name").val();
+            $('#form').validate({ // initialize the plugin
+                ignore: [],
 
-            console.log(form_data);
+                rules: {
 
-            if (artist_name != "") {
-                $.ajax({
-                    type: "POST",
-                    url: "send_artist_data.php",
-                    data: form_data,
-                    cache: false,
-                    success: function(data) {
-                        var res = $.parseJSON(data);
-                        console.log(res);
-                        $("#notification-div").html(res[0]);
+                    artist_name: {
+                        required: true,
 
-                        $('html, body').animate({
-                            scrollTop: $("#notification-div").offset().top
-                        }, 100);
-                    }
-                });
-            }
-            else {
-                $("#notification-div").html('<h4 class="text-danger">**Enter Artist Name!</h4>');
-            }
+                    },
+
+                },
+                submitHandler: function(form) { // for demo
+                    var form_data = $("#form").serialize();
+
+                    $.ajax({
+                        type: "POST",
+                        url: "send_artist_data.php",
+                        data: form_data,
+                        cache: false,
+                        success: function(data) {
+                            var res = $.parseJSON(data);
+                            console.log(res);
+                            $("#notification-div").html(res[0]);
+
+
+                            $('html, body').animate({
+                                scrollTop: $("#notification-div").offset().top
+                            }, 100);
+                        }
+                    });
+
+
+
+                }
+            });
+
+            // console.log($("#song-form").validate());
+
+
         }
     </script>
 

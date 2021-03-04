@@ -11,8 +11,8 @@ if (empty($_COOKIE['remember_me'])) {
     }
 }
 
-if(!in_array(4,$_SESSION["user_access_arr"])){
-	header('location:index.php');
+if (!in_array(4, $_SESSION["user_access_arr"])) {
+    header('location:index.php');
 }
 
 
@@ -71,6 +71,9 @@ if(!in_array(4,$_SESSION["user_access_arr"])){
             <div class="row">
                 <div class="col-md-12">
 
+                    <div id="notification-div">
+                    </div>
+
                     <div class="panel panel-primary" data-collapsed="0">
 
                         <div class="panel-heading">
@@ -87,57 +90,7 @@ if(!in_array(4,$_SESSION["user_access_arr"])){
 
                         <div class="panel-body">
 
-                            <?php
-
-                            if (isset($_POST['submit'])) {
-
-
-
-                                $genre = $_POST["name"];
-
-                                $created_by = $_SESSION["user_id"];
-
-                                $stmt = $conn->prepare("INSERT INTO `genres`( `name`,`created_by`,`created`) VALUES (:name,:created_by ,CURRENT_TIMESTAMP)");
-
-
-                                $stmt->bindParam(':name', $genre);
-                                $stmt->bindParam(':created_by', $created_by);
-
-                                if ($stmt->execute()) {
-
-
-                            ?>
-
-                                    <br>
-                                    <div class="alert alert-success alert-dismissible" role="alert">
-                                        <strong>Congrats!</strong> Successfully Submit
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <br>
-
-                                <?php
-
-                                } else {
-                                ?>
-                                    <br>
-                                    <div class="alert alert-danger alert-dismissible" role="alert">
-                                        <strong>Oops!</strong> Some Error Occured
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <br>
-
-                            <?php
-                                }
-                            }
-
-                            ?>
-
-
-                            <form role="form" method="post" class="form-horizontal form-groups-bordered">
+                            <form id="form" role="form" class="form-horizontal form-groups-bordered">
 
 
                                 <div class="form-group">
@@ -151,7 +104,7 @@ if(!in_array(4,$_SESSION["user_access_arr"])){
 
                                 <div class="form-group">
                                     <div class="col-sm-offset-3 col-sm-5">
-                                        <button type="submit" name="submit" class="btn btn-default">Add Genre</button>
+                                        <button type="submit" onclick="sendFormData()" name="submit" class="btn btn-default">Add Genre</button>
                                     </div>
                                 </div>
                             </form>
@@ -201,6 +154,54 @@ if(!in_array(4,$_SESSION["user_access_arr"])){
 
     <!-- Demo Settings -->
     <script src="assets/js/neon-demo.js"></script>
+
+    <script src="assets/js/jquery.validate.min.js"></script>
+
+    <script>
+        function sendFormData() {
+
+
+            $('#form').validate({ // initialize the plugin
+                ignore: [],
+
+                rules: {
+
+                    name: {
+                        required: true,
+
+                    },
+
+                },
+                submitHandler: function(form) { // for demo
+                    var form_data = $("#form").serialize();
+
+                    $.ajax({
+                        type: "POST",
+                        url: "send_genres_data.php",
+                        data: form_data,
+                        cache: false,
+                        success: function(data) {
+                            var res = $.parseJSON(data);
+                            console.log(res);
+                            $("#notification-div").html(res[0]);
+
+
+                            $('html, body').animate({
+                                scrollTop: $("#notification-div").offset().top
+                            }, 100);
+                        }
+                    });
+
+
+
+                }
+            });
+
+            // console.log($("#song-form").validate());
+
+
+        }
+    </script>
 
 </body>
 

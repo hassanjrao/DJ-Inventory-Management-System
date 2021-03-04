@@ -67,6 +67,8 @@ if (empty($_COOKIE['remember_me'])) {
             <div class="row">
                 <div class="col-md-12">
 
+                <div id="notification-div">
+                            </div>
                     <div class="panel panel-primary" data-collapsed="0">
 
                         <div class="panel-heading">
@@ -83,87 +85,7 @@ if (empty($_COOKIE['remember_me'])) {
 
                         <div class="panel-body">
 
-                            <?php
-
-                            if (isset($_POST['submit'])) {
-
-
-                                $artists_arr = $_POST["artists"];
-
-                                $song_name = $_POST["song_name"];
-                                $project = $_POST["project"];
-                                $genre = $_POST["genre"];
-                                $tags = $_POST["tags"];
-                                $original_bpm = $_POST["original_bpm"];
-                                $original_key = $_POST["original_key"];
-                                $viloence_drugs_guns = isset($_POST["viloence_drugs_guns"]) == true ? $_POST["viloence_drugs_guns"] : "no";
-                                $explicit_lyrical_content = isset($_POST["explicit_lyrical_content"]) == true ? $_POST["explicit_lyrical_content"] : "no";
-
-                                $created_by = $_SESSION["user_id"];
-                                $updated_by = $created_by;
-
-                                $stmt = $conn->prepare("INSERT INTO `songs`( `song_name`,`project`,`genre`,`tags`,`original_bpm`,`original_key`,`viloence_drugs_guns`,`explicit_lyrical_content`,`created_by`,`updated_by`,`created`,`updated`) 
-                                VALUES (:song_name,:project,:genre,:tags,:original_bpm,:original_key,:viloence_drugs_guns,:explicit_lyrical_content,:created_by,:updated_by ,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)");
-
-
-                                $stmt->bindParam(':song_name', $song_name);
-                                $stmt->bindParam(':project', $project);
-                                $stmt->bindParam(':genre', $genre);
-                                $stmt->bindParam(':tags', $tags);
-                                $stmt->bindParam(':original_bpm', $original_bpm);
-                                $stmt->bindParam(':original_key', $original_key);
-                                $stmt->bindParam(':viloence_drugs_guns', $viloence_drugs_guns);
-                                $stmt->bindParam(':explicit_lyrical_content', $explicit_lyrical_content);
-
-                                $stmt->bindParam(':created_by', $created_by);
-                                $stmt->bindParam(':updated_by', $updated_by);
-
-                                if ($stmt->execute()) {
-
-                                    $song_id = $conn->lastInsertId();
-
-                                    foreach ($artists_arr as $key => $artist) {
-
-                                        $stmt = $conn->prepare("INSERT INTO `song_artists`( `song_id`,`artist_id`) VALUES (:song_id,:artist_id)");
-                                        $stmt->bindParam(':song_id', $song_id);
-                                        $stmt->bindParam(':artist_id', $artist);
-                                        $stmt->execute();
-                                    }
-
-
-
-                            ?>
-
-                                    <br>
-                                    <div class="alert alert-success alert-dismissible" role="alert">
-                                        <strong>Congrats!</strong> Successfully Submit
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <br>
-
-                                <?php
-
-                                } else {
-                                ?>
-                                    <br>
-                                    <div class="alert alert-danger alert-dismissible" role="alert">
-                                        <strong>Oops!</strong> Some Error Occured
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <br>
-
-                            <?php
-                                }
-                            }
-
-                            ?>
-
-                            <div id="notification-div">
-                            </div>
+                           
 
                             <form role="form" id="song-form" class="form-horizontal form-groups-bordered">
 
@@ -176,12 +98,13 @@ if (empty($_COOKIE['remember_me'])) {
                                     </div>
                                 </div>
 
+
+
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Artists</label>
 
-                                    <div class="col-sm-5">
-                                        <select class="form-control " multiple name="artists[]" required="">
-
+                                    <div class="col-sm-7">
+                                        <select multiple="multiple" name="artists[]" class="form-control multi-select" required="">
                                             <?php
 
                                             $query = $conn->prepare("SELECT id,artist_name FROM artists order by id desc");
@@ -197,9 +120,6 @@ if (empty($_COOKIE['remember_me'])) {
 
 
                                             ?>
-
-
-
                                         </select>
                                     </div>
                                 </div>
@@ -208,13 +128,6 @@ if (empty($_COOKIE['remember_me'])) {
 
 
 
-                                <div class="form-group">
-                                    <label for="field-1" class="col-sm-3 control-label">Album/Movie/Poject</label>
-
-                                    <div class="col-sm-5">
-                                        <input required="" type="text" name="project" class="form-control" id="field-1" placeholder="Album/Movie/Poject">
-                                    </div>
-                                </div>
 
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Genre</label>
@@ -251,6 +164,45 @@ if (empty($_COOKIE['remember_me'])) {
 
                                     </div>
                                 </div>
+
+
+
+                                <div class="form-group">
+                                    <div class="col-sm-offset-3 col-sm-5">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input name="viloence_drugs_guns" value="yes" type="checkbox">References to Violence, Drugs, Guns
+                                            </label>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-sm-offset-3 col-sm-5">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input name="explicit_lyrical_content" value="yes" type="checkbox">Contains Explicit Lyrical Content
+
+                                            </label>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="field-1" class="col-sm-3 control-label">Album/Movie/Poject</label>
+
+                                    <div class="col-sm-5">
+                                        <input required="" type="text" name="project" class="form-control" id="field-1" placeholder="Album/Movie/Poject">
+                                    </div>
+                                </div>
+
+
+
+
 
                                 <div class="form-group">
                                     <label for="field-1" class="col-sm-3 control-label">Original BPM</label>
@@ -297,29 +249,7 @@ if (empty($_COOKIE['remember_me'])) {
 
 
 
-                                <div class="form-group">
-                                    <div class="col-sm-offset-3 col-sm-5">
-                                        <div class="checkbox">
-                                            <label>
-                                                <input name="viloence_drugs_guns" value="yes" type="checkbox">Viloence, Drugs, Guns
-                                            </label>
-                                        </div>
 
-
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <div class="col-sm-offset-3 col-sm-5">
-                                        <div class="checkbox">
-                                            <label>
-                                                <input name="explicit_lyrical_content" value="yes" type="checkbox">Explicit Lyrical Content
-                                            </label>
-                                        </div>
-
-
-                                    </div>
-                                </div>
 
 
 

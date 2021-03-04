@@ -132,7 +132,7 @@ if (empty($_COOKIE['remember_me'])) {
                             [10, 25, 50, -1],
                             [10, 25, 50, "All"]
                         ],
-                        "bStateSave": true,
+                        
                         responsive: true
                     });
 
@@ -148,19 +148,21 @@ if (empty($_COOKIE['remember_me'])) {
             <!-- <h3>Table without DataTable Header</h3> -->
 
 
-            <table class="table table-bordered datatable wrap" id="table-2">
+            <table class="table-bordered dt-responsive nowrap" style="width:100%" id="table-2">
                 <thead>
                     <tr>
                         <th>Id</th>
                         <th>Song Name</th>
                         <th>Song's Artist</th>
-                        <th>Project</th>
+                        <th>Album/Movie/Project</th>
                         <th>Genre</th>
-                        <th>Tags</th>
+                        
                         <th>Original BPM</th>
                         <th>Original Key</th>
-                        <th>Viloence, Drugs, Guns</th>
-                        <th>Explicit Lyrical Content</th>
+                        <th>Contains Explicit Lyrical Content</th>
+                        <th>Reference to Violence, Drugs, Guns</th>
+                        
+                        <th>Tags</th>
                         <th>Created By</th>
                         <th>Created at</th>
                         <th>Updated By</th>
@@ -246,11 +248,13 @@ if (empty($_COOKIE['remember_me'])) {
 
                             <td><?php echo $result["project"]; ?></td>
                             <td><?php echo $result["genre_name"]; ?></td>
-                            <td><?php echo $result["tags"]; ?></td>
+                           
                             <td><?php echo $result["original_bpm"]; ?></td>
                             <td><?php echo $result["original_key"]; ?></td>
-                            <td><?php echo $result["viloence_drugs_guns"]; ?></td>
                             <td><?php echo $result["explicit_lyrical_content"]; ?></td>
+                            <td><?php echo $result["viloence_drugs_guns"]; ?></td>
+                            
+                            <td><?php echo $result["tags"]; ?></td>
                             <td><?php echo $result["Creator"]; ?></td>
                             <td><?php echo $result["created"]; ?></td>
                             <td><?php echo $result["Modifier"]; ?></td>

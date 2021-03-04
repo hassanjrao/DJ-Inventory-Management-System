@@ -12,7 +12,7 @@ if (empty($_COOKIE['remember_me'])) {
 }
 
 
-if(!in_array(1,$_SESSION["user_access_arr"])  && !in_array(4,$_SESSION["user_access_arr"])){
+if (!in_array(1, $_SESSION["user_access_arr"])  && !in_array(4, $_SESSION["user_access_arr"])) {
     header("location: index.php");
 }
 ?>
@@ -70,6 +70,9 @@ if(!in_array(1,$_SESSION["user_access_arr"])  && !in_array(4,$_SESSION["user_acc
             <div class="row">
                 <div class="col-md-12">
 
+                    <div id="notification-div">
+                    </div>
+
                     <div class="panel panel-primary" data-collapsed="0">
 
                         <div class="panel-heading">
@@ -110,7 +113,7 @@ if(!in_array(1,$_SESSION["user_access_arr"])  && !in_array(4,$_SESSION["user_acc
 
 
 
-                            <form role="form" method="post" class="form-horizontal form-groups-bordered">
+                            <form id="form" class="form-horizontal form-groups-bordered">
 
 
                                 <div class="form-group">
@@ -121,40 +124,17 @@ if(!in_array(1,$_SESSION["user_access_arr"])  && !in_array(4,$_SESSION["user_acc
                                     </div>
                                 </div>
 
+                                <input type="hidden" name="artist_id" value="<?php echo $artist_id ?>">
+
 
 
                                 <div class="form-group">
                                     <div class="col-sm-offset-3 col-sm-5">
-                                        <button type="submit" name="submit" class="btn btn-default">Edit artist</button>
+                                        <button onclick="sendFormData()" type="submit" name="upd-submit" class="btn btn-default">Edit artist</button>
                                     </div>
                                 </div>
                             </form>
 
-                            <?php
-
-                            if (isset($_POST['submit'])) {
-
-
-                                $artist_name = $_POST["artist_name"];
-
-                                $updated_by = $_SESSION["user_id"];
-
-
-
-                                $stmt = $conn->prepare("UPDATE `artists` SET artist_name=:artist_name, updated_by=:updated_by ,updated=CURRENT_TIMESTAMP WHERE id=:id");
-
-
-                                $stmt->bindParam(':artist_name', $artist_name);
-                                $stmt->bindParam(':updated_by', $updated_by);
-
-                                $stmt->bindParam(':id', $artist_id);
-
-                                if ($stmt->execute()) {
-
-                                    header("location: all_artists.php?status=edit_succ");
-                                }
-                            }
-                            ?>
 
 
                         </div>
@@ -202,6 +182,54 @@ if(!in_array(1,$_SESSION["user_access_arr"])  && !in_array(4,$_SESSION["user_acc
 
     <!-- Demo Settings -->
     <script src="assets/js/neon-demo.js"></script>
+
+    <script src="assets/js/jquery.validate.min.js"></script>
+
+    <script>
+        function sendFormData() {
+
+
+            $('#form').validate({ // initialize the plugin
+                ignore: [],
+
+                rules: {
+
+                    artist_name: {
+                        required: true,
+
+                    },
+
+                },
+                submitHandler: function(form) { // for demo
+                    var form_data = $("#form").serialize();
+
+                    $.ajax({
+                        type: "POST",
+                        url: "send_artist_data.php",
+                        data: form_data,
+                        cache: false,
+                        success: function(data) {
+                            var res = $.parseJSON(data);
+                            console.log(res);
+                            $("#notification-div").html(res[0]);
+
+
+                            $('html, body').animate({
+                                scrollTop: $("#notification-div").offset().top
+                            }, 100);
+                        }
+                    });
+
+
+
+                }
+            });
+
+            // console.log($("#song-form").validate());
+
+
+        }
+    </script>
 
 </body>
 

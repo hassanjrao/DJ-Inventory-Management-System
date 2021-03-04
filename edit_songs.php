@@ -67,6 +67,9 @@ if (empty($_COOKIE['remember_me'])) {
             <div class="row">
                 <div class="col-md-12">
 
+                    <div id="notification-div">
+                    </div>
+
                     <div class="panel panel-primary" data-collapsed="0">
 
                         <div class="panel-heading">
@@ -113,7 +116,7 @@ if (empty($_COOKIE['remember_me'])) {
 
 
 
-                            <form role="form" method="post" class="form-horizontal form-groups-bordered">
+                            <form id="form" class="form-horizontal form-groups-bordered">
 
 
                                 <div class="form-group">
@@ -127,17 +130,16 @@ if (empty($_COOKIE['remember_me'])) {
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Artists</label>
 
-                                    <div class="col-sm-5">
-                                        <select class="form-control " multiple name="artists[]" required="">
-
+                                    <div class="col-sm-7">
+                                        <select multiple="multiple" name="artists[]" class="form-control multi-select" required="">
                                             <?php
 
                                             $query_artist_name = $conn->prepare(
                                                 "SELECT artists.id,artists.artist_name 
-                                                FROM artists
-                                                JOIN song_artists
-                                                ON song_artists.artist_id=artists.id
-                                                Where song_artists.song_id='$song_id'"
+                                                    FROM artists
+                                                    JOIN song_artists
+                                                    ON song_artists.artist_id=artists.id
+                                                    Where song_artists.song_id='$song_id'"
                                             );
 
                                             $query_artist_name->execute();
@@ -172,19 +174,7 @@ if (empty($_COOKIE['remember_me'])) {
                                             }
 
                                             ?>
-
-
-
                                         </select>
-                                    </div>
-                                </div>
-
-
-                                <div class="form-group">
-                                    <label for="field-1" class="col-sm-3 control-label">Album/Movie/Poject</label>
-
-                                    <div class="col-sm-5">
-                                        <input required="" type="text" name="project" value="<?php echo $result["project"]; ?>" class="form-control" id="field-1" placeholder="Album/Movie/Poject">
                                     </div>
                                 </div>
 
@@ -217,6 +207,7 @@ if (empty($_COOKIE['remember_me'])) {
                                     </div>
                                 </div>
 
+
                                 <div class="form-group">
                                     <label for="field-1" class="col-sm-3 control-label">Tags</label>
 
@@ -224,6 +215,45 @@ if (empty($_COOKIE['remember_me'])) {
                                         <input required="" type="text" name="tags" value="<?php echo $result["tags"]; ?>" class="form-control tagsinput" id="field-1" placeholder="Tags">
                                     </div>
                                 </div>
+
+
+
+                                <div class="form-group">
+                                    <div class="col-sm-offset-3 col-sm-5">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input <?php echo $result["viloence_drugs_guns"] == "yes" ? "checked" : "" ?> name="viloence_drugs_guns" value="yes" type="checkbox">References to Violence, Drugs, Guns
+                                            </label>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-sm-offset-3 col-sm-5">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input <?php echo $result["explicit_lyrical_content"] == "yes" ? "checked" : "" ?> name="explicit_lyrical_content" value="yes" type="checkbox">Contains Explicit Lyrical Content:
+
+                                            </label>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="field-1" class="col-sm-3 control-label">Album/Movie/Poject</label>
+
+                                    <div class="col-sm-5">
+                                        <input required="" type="text" name="project" value="<?php echo $result["project"]; ?>" class="form-control" id="field-1" placeholder="Album/Movie/Poject">
+                                    </div>
+                                </div>
+
+
+
+
 
                                 <div class="form-group">
                                     <label for="field-1" class="col-sm-3 control-label">Original BPM</label>
@@ -291,95 +321,19 @@ if (empty($_COOKIE['remember_me'])) {
 
 
 
-                                <div class="form-group">
-                                    <div class="col-sm-offset-3 col-sm-5">
-                                        <div class="checkbox">
-                                            <label>
-                                                <input <?php echo $result["viloence_drugs_guns"] == "yes" ? "checked" : "" ?> name="viloence_drugs_guns" value="yes" type="checkbox">Viloence, Drugs, Guns
-                                            </label>
-                                        </div>
 
-
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <div class="col-sm-offset-3 col-sm-5">
-                                        <div class="checkbox">
-                                            <label>
-                                                <input <?php echo $result["explicit_lyrical_content"] == "yes" ? "checked" : "" ?> name="explicit_lyrical_content" value="yes" type="checkbox">Explicit Lyrical Content
-                                            </label>
-                                        </div>
-
-
-                                    </div>
-                                </div>
-
-
+                                <input type="hidden" name="song_id" value="<?php echo $song_id ?>">
 
 
 
                                 <div class="form-group">
                                     <div class="col-sm-offset-3 col-sm-5">
-                                        <button type="submit" name="submit" class="btn btn-default">Edit Song</button>
+                                        <button type="submit" onclick="sendFormData()" name="upd-submit" class="btn btn-default">Edit Song</button>
                                     </div>
                                 </div>
                             </form>
 
-                            <?php
-
-                            if (isset($_POST['submit'])) {
-
-
-                                $artists_arr = $_POST["artists"];
-
-                                $song_name = $_POST["song_name"];
-                                $project = $_POST["project"];
-                                $genre = $_POST["genre"];
-                                $tags = $_POST["tags"];
-                                $original_bpm = $_POST["original_bpm"];
-                                $original_key = $_POST["original_key"];
-                                $viloence_drugs_guns = isset($_POST["viloence_drugs_guns"]) == true ? $_POST["viloence_drugs_guns"] : "no";
-                                $explicit_lyrical_content = isset($_POST["explicit_lyrical_content"]) == true ? $_POST["explicit_lyrical_content"] : "no";
-
-
-
-                                $updated_by = $_SESSION["user_id"];
-
-
-                                $stmt = $conn->prepare("UPDATE `songs` SET song_name=:song_name,project=:project,genre=:genre,tags=:tags,original_bpm=:original_bpm,original_key=:original_key,viloence_drugs_guns=:viloence_drugs_guns,explicit_lyrical_content=:explicit_lyrical_content, updated_by=:updated_by ,updated=CURRENT_TIMESTAMP WHERE id=:id");
-
-                                $stmt->bindParam(':song_name', $song_name);
-                                $stmt->bindParam(':project', $project);
-                                $stmt->bindParam(':genre', $genre);
-                                $stmt->bindParam(':tags', $tags);
-                                $stmt->bindParam(':original_bpm', $original_bpm);
-                                $stmt->bindParam(':original_key', $original_key);
-                                $stmt->bindParam(':viloence_drugs_guns', $viloence_drugs_guns);
-                                $stmt->bindParam(':explicit_lyrical_content', $explicit_lyrical_content);
-                                $stmt->bindParam(':updated_by', $updated_by);
-
-                                $stmt->bindParam(':id', $song_id);
-
-                                $stmt->execute();
-
-
-
-                                $del = $conn->prepare("DELETE FROM song_artists WHERE song_id='$song_id'");
-                                $del->execute();
-
-                                foreach ($artists_arr as $key => $artist) {
-
-                                    $stmt = $conn->prepare("INSERT INTO `song_artists`( `song_id`,`artist_id`) VALUES (:song_id,:artist_id)");
-                                    $stmt->bindParam(':song_id', $song_id);
-                                    $stmt->bindParam(':artist_id', $artist);
-                                    $stmt->execute();
-                                }
-
-
-                                header("location: all_songs.php?status=edit_succ");
-                            }
-                            ?>
+                           
 
 
                         </div>
@@ -446,6 +400,78 @@ if (empty($_COOKIE['remember_me'])) {
 
     <!-- Demo Settings -->
     <script src="assets/js/neon-demo.js"></script>
+
+    <script src="assets/js/jquery.validate.min.js"></script>
+
+    <script>
+        function sendFormData() {
+
+
+            $('#form').validate({ // initialize the plugin
+                ignore: [],
+
+                rules: {
+
+                    song_name: {
+                        required: true,
+
+                    },
+                    artists: {
+                        required: true,
+
+                    },
+                    project: {
+                        required: true,
+
+                    },
+
+                    tags: {
+                        required: true,
+
+                    },
+                    original_bpm: {
+                        required: true,
+
+                    },
+
+
+
+                },
+                submitHandler: function(form) { // for demo
+                    var form_data = $("#form").serialize();
+
+
+
+
+
+                    $.ajax({
+                        type: "POST",
+                        url: "send_songs_data.php",
+                        data: form_data,
+                        cache: false,
+                        success: function(data) {
+                            var res = $.parseJSON(data);
+                            console.log(res);
+                            $("#notification-div").html(res[0]);
+
+
+                            $('html, body').animate({
+                                scrollTop: $("#notification-div").offset().top
+                            }, 100);
+                        }
+                    });
+
+
+
+                }
+            });
+
+            // console.log($("#song-form").validate());
+
+
+        }
+    </script>
+
 
 </body>
 

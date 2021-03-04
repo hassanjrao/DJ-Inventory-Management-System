@@ -128,7 +128,7 @@ if (empty($_COOKIE['remember_me'])) {
 					// Initialize DataTable
 					$table1.DataTable({
 						"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-						"bStateSave": true
+						responsive: true
 					});
 
 					// Initalize Select Dropdown after DataTables is created
@@ -147,9 +147,11 @@ if (empty($_COOKIE['remember_me'])) {
                     <tr>
                         <th>Id</th>
                         <th>Genre Name</th>
-                        <th>Created_by</th>
+                        <th>Created_by</th>    
                         <th>Created at</th>
+                        <th>Updated by</th>
                         <th>Updated at</th>
+                        
                         <th>Action</th>
 
                     </tr>
@@ -163,9 +165,12 @@ if (empty($_COOKIE['remember_me'])) {
 
                     $query = $conn->prepare(
 
-                        "SELECT genres.* , users.name as user_name
-                        FROM users JOIN genres 
+                        "SELECT genres.* , users.name Creator, a.name Modifier  
+                        FROM genres 
+                        JOIN users 
                         ON genres.created_by=users.id
+                        JOIN users a
+                        ON genres.updated_by=a.id 
                         ORDER BY genres.id desc"
 
                     );
@@ -181,8 +186,9 @@ if (empty($_COOKIE['remember_me'])) {
                         <tr>
                             <td><?php echo $i++; ?></td>
                             <td><?php echo $result["name"]; ?></td>
-                            <td><?php echo $result["user_name"]; ?></td>
+                            <td><?php echo $result["Creator"]; ?></td>
                             <td><?php echo $result["created"]; ?></td>
+                            <td><?php echo $result["Modifier"]; ?></td>
                             <td><?php echo $result["updated"]; ?></td>
 
 

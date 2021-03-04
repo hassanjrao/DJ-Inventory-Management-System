@@ -10,8 +10,8 @@ if (empty($_COOKIE['remember_me'])) {
         header('location:login.php');
     }
 }
-if(!in_array(4,$_SESSION["user_access_arr"])){
-	header('location:index.php');
+if (!in_array(4, $_SESSION["user_access_arr"])) {
+    header('location:index.php');
 }
 
 ?>
@@ -54,26 +54,29 @@ if(!in_array(4,$_SESSION["user_access_arr"])){
                 </li>
                 <li>
 
-                    <a href="#">Generes</a>
+                    <a href="#">Genres</a>
                 </li>
                 <li class="active">
 
-                    <strong>Edit Genere</strong>
+                    <strong>Edit Genre</strong>
                 </li>
             </ol>
 
-            <h2>Edit Genere</h2>
+            <h2>Edit Genre</h2>
             <br />
 
 
             <div class="row">
                 <div class="col-md-12">
 
+                    <div id="notification-div">
+                    </div>
+
                     <div class="panel panel-primary" data-collapsed="0">
 
                         <div class="panel-heading">
                             <div class="panel-title">
-                                Edit Genere Info
+                                Edit Genre Info
                             </div>
 
                             <div class="panel-options">
@@ -89,14 +92,14 @@ if(!in_array(4,$_SESSION["user_access_arr"])){
 
                             <?php
 
-                            $genere_id = $_GET["genere_id"];
+                            $genere_id = $_GET["genre_id"];
 
                             $query = $conn->prepare(
 
-                                "SELECT generes.* , users.name as user_name
-                                    FROM users JOIN generes 
-                                    ON generes.created_by=users.id
-                                    Where generes.id='$genere_id'"
+                                "SELECT genres.* , users.name as user_name
+                                    FROM users JOIN genres 
+                                    ON genres.created_by=users.id
+                                    Where genres.id='$genere_id'"
 
                             );
 
@@ -109,51 +112,27 @@ if(!in_array(4,$_SESSION["user_access_arr"])){
 
 
 
-                            <form role="form" method="post" class="form-horizontal form-groups-bordered">
+                            <form id="form" method="post" class="form-horizontal form-groups-bordered">
 
 
                                 <div class="form-group">
-                                    <label for="field-1" class="col-sm-3 control-label">genere Display Name</label>
+                                    <label for="field-1" class="col-sm-3 control-label">Genre Display Name</label>
 
                                     <div class="col-sm-5">
-                                        <input required="" type="text" name="name" value=<?php echo $result["name"]; ?> class="form-control" id="field-1" placeholder="Display Name">
+                                        <input required="" type="text" name="name" value="<?php echo $result["name"]; ?>" class="form-control" id="field-1" placeholder="Display Name">
                                     </div>
                                 </div>
 
 
-
+                                <input type="hidden" name="genre_id" value="<?php echo $genere_id ?>">
                                 <div class="form-group">
                                     <div class="col-sm-offset-3 col-sm-5">
-                                        <button type="submit" name="submit" class="btn btn-default">Edit genere</button>
+                                        <button onclick="sendFormData()" type="submit" name="upd-submit" class="btn btn-default">Edit genere</button>
                                     </div>
                                 </div>
                             </form>
 
-                            <?php
 
-                            if (isset($_POST['submit'])) {
-
-
-                                $genere = $_POST["name"];
-
-                                $created_by = $_SESSION["user_id"];
-
-
-
-                                $stmt = $conn->prepare("UPDATE `Generes` SET name=:name, created_by=:created_by ,updated=CURRENT_TIMESTAMP WHERE id=:id");
-
-
-                                $stmt->bindParam(':name', $genere);
-                                $stmt->bindParam(':created_by', $created_by);
-
-                                $stmt->bindParam(':id', $genere_id);
-
-                                if ($stmt->execute()) {
-
-                                    header("location: all_generes.php?status=edit_succ");
-                                }
-                            }
-                            ?>
 
 
                         </div>
@@ -201,6 +180,54 @@ if(!in_array(4,$_SESSION["user_access_arr"])){
 
     <!-- Demo Settings -->
     <script src="assets/js/neon-demo.js"></script>
+
+    <script src="assets/js/jquery.validate.min.js"></script>
+
+    <script>
+        function sendFormData() {
+
+
+            $('#form').validate({ // initialize the plugin
+                ignore: [],
+
+                rules: {
+
+                    name: {
+                        required: true,
+
+                    },
+
+                },
+                submitHandler: function(form) { // for demo
+                    var form_data = $("#form").serialize();
+
+                    $.ajax({
+                        type: "POST",
+                        url: "send_genres_data.php",
+                        data: form_data,
+                        cache: false,
+                        success: function(data) {
+                            var res = $.parseJSON(data);
+                            console.log(res);
+                            $("#notification-div").html(res[0]);
+
+
+                            $('html, body').animate({
+                                scrollTop: $("#notification-div").offset().top
+                            }, 100);
+                        }
+                    });
+
+
+
+                }
+            });
+
+            // console.log($("#song-form").validate());
+
+
+        }
+    </script>
 
 </body>
 

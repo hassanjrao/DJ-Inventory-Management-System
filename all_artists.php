@@ -122,33 +122,15 @@ if (empty($_COOKIE['remember_me'])) {
             <br />
 
 
-            <script type="text/javascript">
-                jQuery(document).ready(function($) {
-                    var $table1 = jQuery('#table-2');
 
-                    // Initialize DataTable
-                    $table1.DataTable({
-                        "aLengthMenu": [
-                            [10, 25, 50, -1],
-                            [10, 25, 50, "All"]
-                        ],
-                        "bStateSave": true
-                    });
-
-                    // Initalize Select Dropdown after DataTables is created
-                    $table1.closest('.dataTables_wrapper').find('select').select2({
-                        minimumResultsForSearch: -1
-                    });
-                });
-            </script>
 
 
 
             <!-- <h3>Table without DataTable Header</h3> -->
 
 
-            <table class="table table-bordered datatable" id="table-2">
-                <thead>
+            <table class="table table-bordered dt-responsive nowrap" id="table-2">
+                <thead style="background: black;">
                     <tr>
                         <th>Id</th>
                         <th>Artist Name</th>
@@ -156,6 +138,7 @@ if (empty($_COOKIE['remember_me'])) {
                         <th>Created at</th>
                         <th>Updated by</th>
                         <th>Updated at</th>
+                      
                         <th>Action</th>
 
                     </tr>
@@ -290,6 +273,27 @@ if (empty($_COOKIE['remember_me'])) {
 
     <!-- Demo Settings -->
     <script src="assets/js/neon-demo.js"></script>
+
+    <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            var $table1 = jQuery('#table-2');
+
+            // Initialize DataTable
+            $table1.DataTable({
+                "aLengthMenu": [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, "All"]
+                ],
+                "bStateSave": true,
+                responsive: true
+            });
+
+            // Initalize Select Dropdown after DataTables is created
+            $table1.closest('.dataTables_wrapper').find('select').select2({
+                minimumResultsForSearch: -1
+            });
+        });
+    </script>
 
 
 

@@ -62,95 +62,46 @@ if (empty($_COOKIE['remember_me'])) {
 
             <h2>All Show Names</h2>
 
-            <?php
 
-            if (isset($_GET["status"])) {
-
-                if ($_GET["status"] == "edit_succ") {
-
-            ?>
-                    <br>
-                    <div class="alert alert-success alert-dismissible" role="alert">
-                        <strong>Congrats!</strong> Successfully Updated
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                <?php
-
-                } else if ($_GET["status"] == "edit_fail") {
-
-                ?>
-                    <br>
-                    <div class="alert alert-success alert-danger" role="alert">
-                        <strong>Congrats!</strong> Something Went Wrong, Update Failed
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                <?php
-                }
-                if ($_GET["status"] == "del_succ") {
-
-                ?>
-                    <br>
-                    <div class="alert alert-success alert-dismissible" role="alert">
-                        <strong>Congrats!</strong> Successfully Deleted
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                <?php
-                }
-                if ($_GET["status"] == "del_fail") {
-
-                ?>
-                    <br>
-                    <div class="alert alert-success alert-danger" role="alert">
-                        <strong>Congrats!</strong> Something Went Wrong, Deltetion Failed
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-            <?php
-                }
-            }
-
-            ?>
 
 
             <br />
 
             <script type="text/javascript">
-				jQuery(document).ready(function ($) {
-					var $table1 = jQuery('#table-2');
+                jQuery(document).ready(function($) {
+                    var $table1 = jQuery('#table-2');
 
-					// Initialize DataTable
-					$table1.DataTable({
-						"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-						"bStateSave": true
-					});
+                    // Initialize DataTable
+                    $table1.DataTable({
+                        "aLengthMenu": [
+                            [10, 25, 50, -1],
+                            [10, 25, 50, "All"]
+                        ],
+                        responsive: true,
 
-					// Initalize Select Dropdown after DataTables is created
-					$table1.closest('.dataTables_wrapper').find('select').select2({
-						minimumResultsForSearch: -1
-					});
-				});
-			</script>
+                    });
+
+                    // Initalize Select Dropdown after DataTables is created
+                    $table1.closest('.dataTables_wrapper').find('select').select2({
+                        minimumResultsForSearch: -1
+                    });
+                });
+            </script>
 
 
             <!-- <h3>Table without DataTable Header</h3> -->
 
 
-            <table class="table table-bordered datatable" id="table-2">
+            <table class="table-bordered dt-responsive nowrap" style="width:100%" id="table-2">
                 <thead>
                     <tr>
                         <th>Id</th>
                         <th>Show Name</th>
                         <th>Description</th>
-                        <th>Plateform</th>        
-                        <th>Created_by</th>
+                        <th>Plateform</th>
+                        <th>Created by</th>
                         <th>Created at</th>
+                        <th>Updated by</th>
                         <th>Updated at</th>
                         <th>Action</th>
 
@@ -165,9 +116,12 @@ if (empty($_COOKIE['remember_me'])) {
 
                     $query = $conn->prepare(
 
-                        "SELECT show_names.* , users.name as user_name
-                        FROM users JOIN show_names 
+                        "SELECT show_names.* , users.name Creator, a.name Modifier  
+                        FROM show_names 
+                        JOIN   users 
                         ON show_names.created_by=users.id
+                        JOIN users a
+                        ON show_names.updated_by=a.id 
                         ORDER BY show_names.id desc"
 
                     );
@@ -185,8 +139,9 @@ if (empty($_COOKIE['remember_me'])) {
                             <td><?php echo $result["show_name"]; ?></td>
                             <td><?php echo $result["description"]; ?></td>
                             <td><?php echo $result["plateform"]; ?></td>
-                            <td><?php echo $result["user_name"]; ?></td>
+                            <td><?php echo $result["Creator"]; ?></td>
                             <td><?php echo $result["created"]; ?></td>
+                            <td><?php echo $result["Modifier"]; ?></td>
                             <td><?php echo $result["updated"]; ?></td>
 
 

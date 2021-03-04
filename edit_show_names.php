@@ -11,8 +11,8 @@ if (empty($_COOKIE['remember_me'])) {
     }
 }
 
-if(!in_array(4,$_SESSION["user_access_arr"])){
-	header('location:index.php');
+if (!in_array(4, $_SESSION["user_access_arr"])) {
+    header('location:index.php');
 }
 ?>
 
@@ -69,6 +69,9 @@ if(!in_array(4,$_SESSION["user_access_arr"])){
             <div class="row">
                 <div class="col-md-12">
 
+                <div id="notification-div">
+                </div>
+
                     <div class="panel panel-primary" data-collapsed="0">
 
                         <div class="panel-heading">
@@ -109,10 +112,10 @@ if(!in_array(4,$_SESSION["user_access_arr"])){
 
 
 
-                            <form role="form" method="post" class="form-horizontal form-groups-bordered">
+                            <form id="form" class="form-horizontal form-groups-bordered">
 
 
-                            <div class="form-group">
+                                <div class="form-group">
                                     <label for="field-1" class="col-sm-3 control-label">Show Name</label>
 
                                     <div class="col-sm-5">
@@ -135,44 +138,15 @@ if(!in_array(4,$_SESSION["user_access_arr"])){
                                         <input required="" type="text" name="plateform" value="<?php echo $result["plateform"]; ?>" class="form-control" id="field-1" placeholder="Show Plateform">
                                     </div>
                                 </div>
-
+                                <input type="hidden" name="show_name_id" value="<?php echo $show_name_id ?>">
 
 
                                 <div class="form-group">
                                     <div class="col-sm-offset-3 col-sm-5">
-                                        <button type="submit" name="submit" class="btn btn-default">Edit show name</button>
+                                        <button onclick="sendFormData()" type="submit" name="upd-submit" class="btn btn-default">Edit show name</button>
                                     </div>
                                 </div>
                             </form>
-
-                            <?php
-
-                            if (isset($_POST['submit'])) {
-
-                                $show_name = $_POST["show_name"];
-                                $description = $_POST["description"];
-                                $plateform = $_POST["plateform"];
-
-                                $created_by = $_SESSION["user_id"];
-
-
-
-                                $stmt = $conn->prepare("UPDATE `show_names` SET show_name=:show_name, description=:description, plateform=:plateform ,created_by=:created_by ,updated=CURRENT_TIMESTAMP WHERE id=:id");
-
-
-                                $stmt->bindParam(':show_name', $show_name);
-                                $stmt->bindParam(':description', $description);
-                                $stmt->bindParam(':plateform', $plateform);
-                                $stmt->bindParam(':created_by', $created_by);
-
-                                $stmt->bindParam(':id', $show_name_id);
-
-                                if ($stmt->execute()) {
-
-                                    header("location: all_show_names.php?status=edit_succ");
-                                }
-                            }
-                            ?>
 
 
                         </div>
@@ -220,6 +194,63 @@ if(!in_array(4,$_SESSION["user_access_arr"])){
 
     <!-- Demo Settings -->
     <script src="assets/js/neon-demo.js"></script>
+
+    <script src="assets/js/jquery.validate.min.js"></script>
+
+    <script>
+        function sendFormData() {
+
+
+            $('#form').validate({ // initialize the plugin
+                ignore: [],
+
+                rules: {
+
+                    show_name: {
+                        required: true,
+
+                    },
+                    description: {
+                        required: true,
+
+                    },
+                    plateform: {
+                        required: true,
+
+                    },
+
+
+                },
+                submitHandler: function(form) { // for demo
+                    var form_data = $("#form").serialize();
+
+                    $.ajax({
+                        type: "POST",
+                        url: "send_show_name_data.php",
+                        data: form_data,
+                        cache: false,
+                        success: function(data) {
+                            var res = $.parseJSON(data);
+                            console.log(res);
+                            $("#notification-div").html(res[0]);
+
+
+                            $('html, body').animate({
+                                scrollTop: $("#notification-div").offset().top
+                            }, 100);
+                        }
+                    });
+
+
+
+                }
+            });
+
+            // console.log($("#song-form").validate());
+
+
+        }
+    </script>
 
 </body>
 

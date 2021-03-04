@@ -10,8 +10,8 @@ if (empty($_COOKIE['remember_me'])) {
         header('location:login.php');
     }
 }
-if(!in_array(4,$_SESSION["user_access_arr"])){
-	header('location:index.php');
+if (!in_array(4, $_SESSION["user_access_arr"])) {
+    header('location:index.php');
 }
 
 ?>
@@ -69,6 +69,9 @@ if(!in_array(4,$_SESSION["user_access_arr"])){
             <div class="row">
                 <div class="col-md-12">
 
+                    <div id="notification-div">
+                    </div>
+
                     <div class="panel panel-primary" data-collapsed="0">
 
                         <div class="panel-heading">
@@ -91,19 +94,7 @@ if(!in_array(4,$_SESSION["user_access_arr"])){
 
 
 
-                                $show_name = $_POST["show_name"];
-                                $description = $_POST["description"];
-                                $plateform = $_POST["plateform"];
 
-                                $created_by = $_SESSION["user_id"];
-
-                                $stmt = $conn->prepare("INSERT INTO `show_names`( `show_name`,`description`,`plateform`,`created_by`,`created`) VALUES (:show_name,:description,:plateform,:created_by ,CURRENT_TIMESTAMP)");
-
-
-                                $stmt->bindParam(':show_name', $show_name);
-                                $stmt->bindParam(':description', $description);
-                                $stmt->bindParam(':plateform', $plateform);
-                                $stmt->bindParam(':created_by', $created_by);
 
                                 if ($stmt->execute()) {
 
@@ -139,7 +130,7 @@ if(!in_array(4,$_SESSION["user_access_arr"])){
                             ?>
 
 
-                            <form role="form" method="post" class="form-horizontal form-groups-bordered">
+                            <form id="form" class="form-horizontal form-groups-bordered">
 
 
                                 <div class="form-group">
@@ -166,11 +157,11 @@ if(!in_array(4,$_SESSION["user_access_arr"])){
                                     </div>
                                 </div>
 
-                               
+
 
                                 <div class="form-group">
                                     <div class="col-sm-offset-3 col-sm-5">
-                                        <button type="submit" name="submit" class="btn btn-default">Add Show</button>
+                                        <button type="submit" onclick="sendFormData()" name="submit" class="btn btn-default">Add Show</button>
                                     </div>
                                 </div>
                             </form>
@@ -220,6 +211,63 @@ if(!in_array(4,$_SESSION["user_access_arr"])){
 
     <!-- Demo Settings -->
     <script src="assets/js/neon-demo.js"></script>
+
+    <script src="assets/js/jquery.validate.min.js"></script>
+
+    <script>
+        function sendFormData() {
+
+
+            $('#form').validate({ // initialize the plugin
+                ignore: [],
+
+                rules: {
+
+                    show_name: {
+                        required: true,
+
+                    },
+                    description: {
+                        required: true,
+
+                    },
+                    plateform: {
+                        required: true,
+
+                    },
+
+
+                },
+                submitHandler: function(form) { // for demo
+                    var form_data = $("#form").serialize();
+
+                    $.ajax({
+                        type: "POST",
+                        url: "send_show_name_data.php",
+                        data: form_data,
+                        cache: false,
+                        success: function(data) {
+                            var res = $.parseJSON(data);
+                            console.log(res);
+                            $("#notification-div").html(res[0]);
+
+
+                            $('html, body').animate({
+                                scrollTop: $("#notification-div").offset().top
+                            }, 100);
+                        }
+                    });
+
+
+
+                }
+            });
+
+            // console.log($("#song-form").validate());
+
+
+        }
+    </script>
 
 </body>
 
